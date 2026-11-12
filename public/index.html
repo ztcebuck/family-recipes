@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ספר המתכונים המשפחתי — אוצר הטעמים של הבית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- Top Decorative Accent Bar -->
+  <div class="top-ribbon"></div>
+
+  <!-- Main Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-area" id="brandHomeBtn" role="button" tabindex="0" aria-label="חזרה לדף הראשי">
+        <div class="brand-emblem">🍲</div>
+        <div class="brand-text">
+          <span class="brand-eyebrow">אוסף המתכונים המשפחתי השלם</span>
+          <h1 class="brand-title">ספר המתכונים של הבית</h1>
+        </div>
+      </div>
+
+      <div class="header-stats" id="headerStats" aria-live="polite">
+        <div class="stat-pill">
+          <span class="stat-num" id="statTotalCount">0</span>
+          <span class="stat-label">מתכונים</span>
+        </div>
+        <div class="stat-pill stat-pill-fav">
+          <span class="stat-num" id="statFavCount">0</span>
+          <span class="stat-label">מועדפים ⭐</span>
+        </div>
+        <div class="stat-pill stat-pill-images">
+          <span class="stat-num" id="statImageCount">0</span>
+          <span class="stat-label">צילומים מקוריים 📷</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary" id="randomRecipeBtn" title="בחר מתכון אקראי מתוך הרשימה">
+          <span>🎲</span>
+          <span>מתכון בהפתעה</span>
+        </button>
+        <button type="button" class="btn btn-ghost" id="refreshDataBtn" title="רענן מתכונים מהשרת">
+          <span>🔄</span>
+          <span class="hide-mobile">רענן</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="addNewRecipeBtn">
+          <span>＋</span>
+          <span>מתכון חדש</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search & Quick Filter Controls -->
+  <section class="search-toolbar" aria-label="חיפוש וסינון מתכונים">
+    <div class="search-toolbar-inner">
+      <!-- Search Box -->
+      <div class="search-input-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="חיפוש מהיר לפי שם מתכון, מצרך (שוקולד, סלמון, חצילים, שמרים...) או מילת מפתח..."
+          autocomplete="off"
+        />
+        <button type="button" id="clearSearchBtn" class="clear-search-btn hidden" aria-label="נקה חיפוש">✕</button>
+      </div>
+
+      <!-- Quick Ingredient Suggestions -->
+      <div class="quick-search-tags" id="quickSearchTags">
+        <span class="quick-tags-label">חיפושים נפוצים:</span>
+        <button type="button" class="quick-tag" data-query="שוקולד">🍫 שוקולד</button>
+        <button type="button" class="quick-tag" data-query="סלמון">🐟 סלמון</button>
+        <button type="button" class="quick-tag" data-query="חצילים">🍆 חצילים</button>
+        <button type="button" class="quick-tag" data-query="עוף">🍗 עוף</button>
+        <button type="button" class="quick-tag" data-query="גבינה">🧀 גבינה</button>
+        <button type="button" class="quick-tag" data-query="שמרים">🥖 שמרים</button>
+        <button type="button" class="quick-tag" data-query="תפוחי אדמה">🥔 תפוחי אדמה</button>
+      </div>
+
+      <!-- Filter Pills Row -->
+      <div class="filters-row">
+        <div class="filter-group" role="group" aria-label="סינון לפי כשרות">
+          <span class="filter-group-label">כשרות:</span>
+          <div class="pill-group" id="kashrutFilterGroup">
+            <button type="button" class="filter-pill active" data-kashrut="all">הכל</button>
+            <button type="button" class="filter-pill pill-parve" data-kashrut="פרווה">🌿 פרווה</button>
+            <button type="button" class="filter-pill pill-dairy" data-kashrut="חלבי">🧀 חלבי</button>
+            <button type="button" class="filter-pill pill-meat" data-kashrut="בשרי">🥩 בשרי</button>
+            <button type="button" class="filter-pill pill-pesach" data-kashrut="פסח">🍷 פסח</button>
+          </div>
+        </div>
+
+        <div class="filter-group" role="group" aria-label="סינון לפי סוג מקור">
+          <span class="filter-group-label">סוג מתכון:</span>
+          <div class="pill-group" id="sourceFilterGroup">
+            <button type="button" class="filter-pill active" data-source="all">הכל</button>
+            <button type="button" class="filter-pill" data-source="with-image">📷 עם צילום מקורי</button>
+            <button type="button" class="filter-pill" data-source="typed">📝 מתכון מוקלד</button>
+            <button type="button" class="filter-pill" data-source="pdf">📄 קובץ PDF</button>
+          </div>
+        </div>
+
+        <div class="filter-group sort-group">
+          <label for="sortSelect" class="filter-group-label">מיון:</label>
+          <select id="sortSelect" class="sort-select">
+            <option value="alpha">לפי א׳-ב׳</option>
+            <option value="favorites">מועדפים תחילה ⭐</option>
+            <option value="category">לפי קטגוריה</option>
+            <option value="with-images">עם צילום מקורי תחילה</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace Layout -->
+  <div class="app-layout">
+    <!-- Category Sidebar / Horizontal Scroll Bar on Mobile -->
+    <aside class="category-sidebar" aria-label="קטגוריות מתכונים">
+      <div class="sidebar-sticky">
+        <h2 class="sidebar-heading">קטגוריות</h2>
+        <nav class="category-nav" id="categoryNav">
+          <!-- Populated dynamically by app.js -->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-main" id="mainContent">
+      <!-- Active Filter Bar -->
+      <div class="results-header">
+        <div class="results-title-area">
+          <h2 class="results-heading" id="activeCategoryTitle">כל המתכונים</h2>
+          <span class="results-count-badge" id="resultsCountBadge">0 מתכונים</span>
+        </div>
+        <button type="button" id="resetFiltersBtn" class="btn btn-link hidden">
+          נקה את כל הסינונים ✕
+        </button>
+      </div>
+
+      <!-- Recipes Grid View -->
+      <div class="recipes-grid" id="recipesGrid" aria-live="polite">
+        <!-- Populated dynamically by app.js -->
+      </div>
+
+      <!-- Course Tami Philip Gallery View (shown when courseGallery tab is active) -->
+      <div class="course-gallery-section hidden" id="courseGallerySection">
+        <div class="course-gallery-banner">
+          <div>
+            <h3>📸 גלריית קורס בישול ואפייה — תמי פיליפ</h3>
+            <p>כל התמונות והשלבים המצולמים מהקורס של תמי פיליפ. לחצו על כל תמונה להגדלה במסך מלא או לסיבוב התמונה.</p>
+          </div>
+        </div>
+        <div class="course-gallery-grid" id="courseGalleryGrid">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">🥣</div>
+        <h3>לא נמצאו מתכונים התואמים לחיפוש</h3>
+        <p id="emptyStateText">נסו לשנות את מילת החיפוש או לאפס את מסנני הכשרות והקטגוריה.</p>
+        <button type="button" class="btn btn-primary" id="emptyResetBtn">הצג את כל המתכונים</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- HYBRID RECIPE DETAIL MODAL (Extracted Text + Original Scan + Kitchen Mode) -->
+  <!-- ====================================================================== -->
+  <div class="modal-backdrop hidden" id="recipeDetailModal" role="dialog" aria-modal="true" aria-labelledby="detailRecipeTitle">
+    <div class="recipe-modal-card" id="recipeModalCard">
+      <!-- Top Sticky Action Bar -->
+      <div class="detail-topbar">
+        <button type="button" class="btn btn-back" id="closeDetailModalBtn">
+          <span>→</span>
+          <span>חזרה למתכונים</span>
+        </button>
+
+        <div class="detail-toolbar-actions">
+          <button type="button" class="btn btn-kitchen" id="toggleKitchenModeBtn" title="הגדל כתב ומנע כיבוי מסך בזמן הבישול">
+            <span>👨‍🍳</span>
+            <span id="kitchenModeBtnLabel">מצב מטבח</span>
+          </button>
+
+          <button type="button" class="btn btn-fav-toggle" id="detailFavBtn" title="שמור במועדפים">
+            <span id="detailFavIcon">☆</span>
+            <span class="hide-mobile">מועדף</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary" id="editCurrentRecipeBtn">
+            <span>✏️</span>
+            <span>ערוך מתכון</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary" id="shareWhatsappBtn" title="העתק מתכון מעוצב לוואטסאפ">
+            <span>💬</span>
+            <span class="hide-mobile">העתק לוואטסאפ</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary" id="printRecipeBtn" title="הדפס מתכון">
+            <span>🖨️</span>
+            <span class="hide-mobile">הדפס</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kitchen WakeLock Status Banner -->
+      <div class="kitchen-active-banner hidden" id="kitchenActiveBanner">
+        <span>🔆 <strong>מצב מטבח פעיל:</strong> גופן מוגדל לעבודה נוחה מהשיש • <span id="wakeLockStatusText">המסך יישאר דלוק</span></span>
+        <button type="button" class="btn-kitchen-exit" id="exitKitchenModeBtn">יציאה ממצב מטבח ✕</button>
+      </div>
+
+      <!-- Recipe Header Metadata -->
+      <div class="detail-hero">
+        <div class="detail-badges" id="detailBadges"></div>
+        <h2 class="detail-title" id="detailRecipeTitle">שם המתכון</h2>
+        <div class="detail-meta-row" id="detailMetaRow"></div>
+      </div>
+
+      <!-- Hybrid 2-Column Body: Right = Structured Text & Multiplier | Left = Original Image / PDF Scan -->
+      <div class="detail-hybrid-grid" id="detailHybridGrid">
+        <!-- Extracted Text Column -->
+        <div class="detail-text-col">
+          <!-- Ingredients Card with Multiplier -->
+          <section class="detail-section ingredients-section" id="detailIngredientsSection">
+            <div class="section-header-row">
+              <h3 class="section-title">🧺 מצרכים</h3>
+              <div class="multiplier-bar" role="group" aria-label="הכפלת כמויות">
+                <span class="multiplier-label">כמות:</span>
+                <button type="button" class="mult-btn" data-mult="0.5">½</button>
+                <button type="button" class="mult-btn active" data-mult="1">×1</button>
+                <button type="button" class="mult-btn" data-mult="1.5">×1.5</button>
+                <button type="button" class="mult-btn" data-mult="2">×2</button>
+                <button type="button" class="mult-btn" data-mult="3">×3</button>
+              </div>
+            </div>
+
+            <div class="ingredients-helper-row">
+              <span class="helper-hint">לחצו על מצרך כדי לסמן ✓ שהוכנס לקערה</span>
+              <button type="button" class="btn-tiny-link hidden" id="resetCheckedIngredientsBtn">אפס סימונים</button>
+            </div>
+
+            <ul class="ingredients-checklist" id="detailIngredientsList"></ul>
+          </section>
+
+          <!-- Preparation Steps Card -->
+          <section class="detail-section steps-section" id="detailStepsSection">
+            <div class="section-header-row">
+              <h3 class="section-title">👩‍🍳 אופן ההכנה</h3>
+              <span class="helper-hint">לחצו על שלב כדי להדגיש את השלב הנוכחי בבישול</span>
+            </div>
+            <ol class="steps-list" id="detailStepsList"></ol>
+          </section>
+
+          <!-- Fallback / Additional Raw Text Section -->
+          <section class="detail-section rawtext-section hidden" id="detailRawTextSection">
+            <div class="section-header-row">
+              <h3 class="section-title">📜 טקסט המתכון</h3>
+            </div>
+            <div class="rawtext-box" id="detailRawTextBox"></div>
+          </section>
+
+          <!-- Family Notes / Tips Section -->
+          <section class="detail-section notes-section hidden" id="detailNotesSection">
+            <h3 class="section-title">💡 הערות וטיפים של הבית</h3>
+            <div class="notes-callout" id="detailNotesContent"></div>
+          </section>
+        </div>
+
+        <!-- Original Image / Scan / PDF Column -->
+        <div class="detail-media-col" id="detailMediaCol">
+          <div class="media-sticky-card">
+            <div class="media-card-header">
+              <h3 class="section-title" id="mediaSectionTitle">📷 צילום / קובץ המתכון המקורי</h3>
+              <span class="page-counter-badge hidden" id="detailImagePageBadge">עמוד 1 מתוך 1</span>
+            </div>
+
+            <!-- Page Switcher Tabs (when recipe has 2+ images) -->
+            <div class="image-page-switcher hidden" id="detailImagePageSwitcher"></div>
+
+            <!-- Main Original Image Container -->
+            <div class="original-image-stage" id="detailImageStage">
+              <img
+                id="detailMainImage"
+                src=""
+                alt="צילום המתכון המקורי"
+                class="detail-main-img"
+                loading="lazy"
+              />
+            </div>
+
+            <!-- Image Manipulation Toolbar (Zoom + Permanent Disk Rotation) -->
+            <div class="image-controls-bar" id="detailImageControlsBar">
+              <button type="button" class="btn btn-img-control" id="openLightboxBtn" title="הגדל תמונה למסך מלא עם זום">
+                <span>🔍</span>
+                <span>הגדל למסך מלא</span>
+              </button>
+              <button type="button" class="btn btn-img-control" id="rotateRightBtn" title="סובב ימינה ושמור לצמיתות">
+                <span>↻</span>
+                <span>סובב ימינה</span>
+              </button>
+              <button type="button" class="btn btn-img-control" id="rotateLeftBtn" title="סובב שמאלה ושמור לצמיתות">
+                <span>↺</span>
+                <span>סובב שמאלה</span>
+              </button>
+            </div>
+
+            <!-- Thumbnail Strip for Multi-Page Recipes -->
+            <div class="detail-thumbs-strip hidden" id="detailThumbsStrip"></div>
+
+            <!-- Original PDF Card (when recipe has originalPdf) -->
+            <div class="pdf-attachment-box hidden" id="detailPdfBox">
+              <div class="pdf-box-info">
+                <span class="pdf-icon">📄</span>
+                <div>
+                  <strong>קובץ PDF מקורי מצורף למתכון</strong>
+                  <p>ניתן לצפות בקובץ המקורי בחלון מלא או להוריד אותו.</p>
+                </div>
+              </div>
+              <div class="pdf-box-actions">
+                <a id="detailPdfLink" href="#" target="_blank" rel="noopener" class="btn btn-primary">
+                  פתח PDF מקורי ↗
+                </a>
+                <button type="button" class="btn btn-secondary" id="toggleEmbeddedPdfBtn">
+                  הצג תצוגה מקדימה כאן
+                </button>
+              </div>
+              <iframe id="detailPdfIframe" class="pdf-preview-iframe hidden" title="תצוגת PDF מקורי"></iframe>
+            </div>
+
+            <!-- Source File Provenance Info -->
+            <div class="source-provenance" id="detailSourceProvenance"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- FULLSCREEN IMAGE LIGHTBOX (Zoom, Pan, Page Switch, Permanent Rotate)   -->
+  <!-- ====================================================================== -->
+  <div class="lightbox-backdrop hidden" id="lightboxModal" role="dialog" aria-modal="true" aria-label="תצוגת תמונה במסך מלא">
+    <div class="lightbox-topbar">
+      <div class="lightbox-title-wrap">
+        <span id="lightboxTitle" class="lightbox-title">צילום מתכון</span>
+        <span id="lightboxCounter" class="lightbox-counter"></span>
+      </div>
+
+      <div class="lightbox-controls">
+        <button type="button" class="lb-btn" id="lbZoomInBtn" title="התקרב (+)">🔍＋</button>
+        <button type="button" class="lb-btn" id="lbZoomOutBtn" title="התרחק (-)">🔍－</button>
+        <button type="button" class="lb-btn" id="lbZoomResetBtn" title="אפס זום (100%)">100%</button>
+        <span class="lb-divider"></span>
+        <button type="button" class="lb-btn" id="lbRotateRightBtn" title="סובב ימינה ושמור לקובץ">↻ סובב ימינה</button>
+        <button type="button" class="lb-btn" id="lbRotateLeftBtn" title="סובב שמאלה ושמור לקובץ">↺ סובב שמאלה</button>
+        <span class="lb-divider"></span>
+        <button type="button" class="lb-btn lb-close-btn" id="lbCloseBtn" title="סגור (Esc)">✕ סגור</button>
+      </div>
+    </div>
+
+    <div class="lightbox-stage" id="lightboxStage">
+      <button type="button" class="lb-nav-arrow lb-prev" id="lbPrevBtn" aria-label="תמונה קודמת">❯</button>
+      <div class="lightbox-img-wrapper" id="lightboxImgWrapper">
+        <img id="lightboxImg" src="" alt="תצוגה מוגדלת" draggable="false" />
+      </div>
+      <button type="button" class="lb-nav-arrow lb-next" id="lbNextBtn" aria-label="תמונה הבאה">❮</button>
+    </div>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- ADD / EDIT RECIPE MODAL                                                -->
+  <!-- ====================================================================== -->
+  <div class="modal-backdrop hidden" id="recipeFormModal" role="dialog" aria-modal="true" aria-labelledby="formModalTitle">
+    <div class="form-modal-card">
+      <div class="form-modal-header">
+        <h2 id="formModalTitle">הוספת מתכון חדש</h2>
+        <button type="button" class="btn-icon-close" id="closeFormModalBtn" aria-label="סגור">✕</button>
+      </div>
+
+      <form id="recipeForm" class="recipe-form">
+        <input type="hidden" id="formRecipeId" value="" />
+
+        <div class="form-grid-row">
+          <div class="form-field form-field-wide">
+            <label for="formTitle">שם המתכון *</label>
+            <input type="text" id="formTitle" required placeholder="למשל: עוגת גבינה פירורים של אמא" />
+          </div>
+
+          <div class="form-field">
+            <label for="formCategory">קטגוריה *</label>
+            <select id="formCategory" required>
+              <option value="cakes">🎂 עוגות ועוגיות</option>
+              <option value="breads">🥖 לחמים ומאפים</option>
+              <option value="mains">🥩 עיקריות ובשרים</option>
+              <option value="salads">🥗 סלטים, רטבים ומטבלים</option>
+              <option value="desserts">🍨 קינוחים, מוסים וגלידות</option>
+              <option value="sides">🥔 תוספות</option>
+              <option value="pesach">🍷 מתכוני פסח</option>
+              <option value="fish">🐟 דגים</option>
+              <option value="dairy">🧀 חלבי</option>
+              <option value="starters">🥟 מנות ראשונות</option>
+              <option value="soups">🍲 מרקים</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="formKashrut">כשרות</label>
+            <select id="formKashrut">
+              <option value="פרווה">🌿 פרווה</option>
+              <option value="חלבי">🧀 חלבי</option>
+              <option value="בשרי">🥩 בשרי</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-row form-grid-3">
+          <div class="form-field">
+            <label for="formSubcategory">תת-קטגוריה / תגית</label>
+            <input type="text" id="formSubcategory" placeholder="למשל: עוגות בחושות / שבת" />
+          </div>
+
+          <div class="form-field">
+            <label for="formPrepTime">זמן הכנה</label>
+            <input type="text" id="formPrepTime" placeholder="למשל: 40 דקות" />
+          </div>
+
+          <div class="form-field">
+            <label for="formServings">כמות מנות / תבנית</label>
+            <input type="text" id="formServings" placeholder="למשל: 2 תבניות אינגליש קייק" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="formIngredients">מצרכים (מצרך אחד בכל שורה)</label>
+          <textarea
+            id="formIngredients"
+            rows="6"
+            placeholder="2 כוסות קמח תופח&#10;1/2 כוס סוכר&#10;3 ביצים שלמות&#10;1 כוס שמן"
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="formSteps">שלבי הכנה (שלב אחד בכל שורה)</label>
+          <textarea
+            id="formSteps"
+            rows="6"
+            placeholder="מחממים תנור ל-180 מעלות.&#10;מערבבים בקערה את כל החומרים היבשים.&#10;מוסיפים את הנוזלים וטורפים היטב עד לבלילה חלקה.&#10;אופים כ-35 דקות עד להזהבה."
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="formNotes">הערות, טיפים או שדרוגים</label>
+          <textarea id="formNotes" rows="2" placeholder="טיפים להקפאה, המרות או הגשה..."></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="formImageUpload">צילום מתכון או תמונת מנה (אופציונלי)</label>
+          <div class="upload-row">
+            <input type="file" id="formImageUpload" accept="image/*" />
+            <span id="uploadStatusText" class="upload-status-text"></span>
+          </div>
+          <div id="formUploadedImagesList" class="uploaded-images-pills"></div>
+        </div>
+
+        <div class="form-modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelFormModalBtn">ביטול</button>
+          <button type="submit" class="btn btn-primary" id="saveRecipeSubmitBtn">💾 שמור מתכון</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
